@@ -1,4 +1,4 @@
-trigger triggerToContact on SOBJECT (before insert) {
+trigger triggerToContact on Contact (before insert) {
 
     if(Trigger.isInsert){
         

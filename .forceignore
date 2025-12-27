@@ -4,7 +4,7 @@
 
 force-app/main/default/profiles/**
 package.xml
-force-app/main/default/triggers/**
+#force-app/main/default/triggers/**
 # LWC configuration files
 **/jsconfig.json
 **/.eslintrc.json
