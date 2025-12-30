@@ -22,14 +22,14 @@ pipeline {
                 withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'JWT_KEY_FILE')]) {
 
                     script {
-                        def authCmd = '
+                        def authCmd = "
                         ${TOOLBELT} auth jwt grant \
                           --client-id ${CONNECTED_APP_CONSUMER_KEY} \
                           --jwt-key-file ${JWT_KEY_FILE} \
                           --username ${HUB_ORG} \
                           --instance-url ${SFDC_HOST} \
                           --set-default-dev-hub
-                        '
+                        "
 
                         if (isUnix()) {
                             sh authCmd
@@ -44,12 +44,12 @@ pipeline {
         stage('Deploy Metadata') {
             steps {
                 script {
-                    def deployCmd = '
+                    def deployCmd = "
                     ${TOOLBELT} project deploy start \
                       --manifest manifest/package.xml \
                       --target-org ${HUB_ORG} \
                       --wait 10
-                    '
+                    "
 
                     if (isUnix()) {
                         sh deployCmd
