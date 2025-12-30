@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         TOOLBELT = 'sf'
-        HUB_ORG = env.HUB_ORG_DH
-        SFDC_HOST = env.SFDC_HOST_DH
-        CONNECTED_APP_CONSUMER_KEY = env.CONNECTED_APP_CONSUMER_KEY_DH
-        JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
+        HUB_ORG = 'env.HUB_ORG_DH'
+        SFDC_HOST = 'env.SFDC_HOST_DH'
+        CONNECTED_APP_CONSUMER_KEY = 'env.CONNECTED_APP_CONSUMER_KEY_DH'
+        JWT_KEY_CRED_ID = 'env.JWT_CRED_ID_DH'
     }
 
     stages {
