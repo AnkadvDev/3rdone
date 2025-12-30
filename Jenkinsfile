@@ -3,10 +3,6 @@ pipeline {
 
     environment {
         TOOLBELT = 'sf'
-        HUB_ORG = 'env.HUB_ORG_DH'
-        SFDC_HOST = 'env.SFDC_HOST_DH'
-        CONNECTED_APP_CONSUMER_KEY = 'env.CONNECTED_APP_CONSUMER_KEY_DH'
-        JWT_KEY_CRED_ID = 'env.JWT_CRED_ID_DH'
     }
 
     stages {
@@ -17,25 +13,27 @@ pipeline {
             }
         }
 
-        stage('Authenticate to Salesforce (JWT)') {
+        stage('Authorize Dev Hub (JWT)') {
             steps {
-                withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'JWT_KEY_FILE')]) {
+                script {
+                    // ✅ Correct way to map Jenkins env vars
+                    def HUB_ORG                     = env.HUB_ORG_DH
+                    def SFDC_HOST                  = env.SFDC_HOST_DH
+                    def CONNECTED_APP_CONSUMER_KEY = env.CONNECTED_APP_CONSUMER_KEY_DH
+                    def JWT_KEY_CRED_ID            = env.JWT_CRED_ID_DH
 
-                    script {
-                        def authCmd = """
-                        ${TOOLBELT} auth jwt grant \
-                          --client-id ${CONNECTED_APP_CONSUMER_KEY} \
-                          --jwt-key-file "${JWT_KEY_FILE}" \
-                          --username ${HUB_ORG} \
-                          --instance-url ${SFDC_HOST} \
+                    withCredentials([
+                        file(credentialsId: JWT_KEY_CRED_ID, variable: 'JWT_KEY_FILE')
+                    ]) {
+
+                        bat """
+                        ${TOOLBELT} auth jwt grant ^
+                          --client-id ${CONNECTED_APP_CONSUMER_KEY} ^
+                          --jwt-key-file "%JWT_KEY_FILE%" ^
+                          --username ${HUB_ORG} ^
+                          --instance-url ${SFDC_HOST} ^
                           --set-default-dev-hub
                         """
-
-                        if (isUnix()) {
-                            sh authCmd
-                        } else {
-                            bat authCmd
-                        }
                     }
                 }
             }
@@ -43,30 +41,12 @@ pipeline {
 
         stage('Deploy Metadata') {
             steps {
-                script {
-                    def deployCmd = """
-                    ${TOOLBELT} project deploy start \
-                      --manifest manifest/package.xml \
-                      --target-org ${HUB_ORG} \
-                      --wait 10
-                    """
-
-                    if (isUnix()) {
-                        sh deployCmd
-                    } else {
-                        bat deployCmd
-                    }
-                }
+                bat """
+                ${TOOLBELT} project deploy start ^
+                  --manifest manifest/package.xml ^
+                  --target-org ${env.HUB_ORG_DH}
+                """
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Deployment completed successfully!'
-        }
-        failure {
-            echo 'Deployment failed!'
         }
     }
 }
