@@ -4,6 +4,8 @@ public with sharing class calc {
     return i-j;
   }
    public static integer addDone(integer i,integer j){
+    //i will do it
     return i+j;
   }
+  //wowww...
 }
