@@ -3,4 +3,7 @@ public with sharing class calc {
   public static integer subDone(integer i,integer j){
     return i-j;
   }
+   public static integer addDone(integer i,integer j){
+    return i+j;
+  }
 }
